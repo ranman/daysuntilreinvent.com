@@ -1,0 +1,83 @@
+<head>
+<style>
+body {
+    font: Comic Sans
+}
+</style>
+<script src="js/jquery-3.1.1.js"></script>
+<script>
+var api_url = "https://ctgofp09m8.execute-api.us-east-1.amazonaws.com/dev";
+// http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+function getParameterByName(name, url) {
+    if (!url) {
+      url = window.location.href;
+    }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+$(document).ready(function() {
+  var oneDay = 24*60*60*1000;
+  var reinvent = new Date(2016, 10, 28);
+  var today = new Date();
+  var diffDays = Math.round((reinvent.getTime() - today.getTime()) / oneDay);
+
+  $("#daysuntil").text(diffDays);
+
+  $('#loginButton').click(function(e) {
+    e.preventDefault();
+    login();
+  });
+
+  if (location.search) {
+    console.log("posting credentials to api")
+    var requestParams = {
+        'oauth_token': getParameterByName("oauth_token"),
+        'oauth_verifier': getParameterByName("oauth_verifier")
+    }
+    $.post(api_url+"/access_token", requestParams, function(resp) { console.log(resp); });
+  }
+});
+
+function login() {
+  $.get(api_url+"/login", function(data, status) {
+    if (status == "success") {
+      console.log(data);
+      window.location = "https://api.twitter.com/oauth/authenticate?oauth_token="+data.oauth_token
+    } else {
+      console.log(data, status);
+    }
+  });
+}
+</script>
+</head>
+<body>
+<h1>Hello, twitch!</h1>
+<h1>Days until reinvent <span id="daysuntil"></span></h1>
+<h3>Posts a tweet FROM YOUR ACCOUNT once a day the number of days remaining until re:Invent.</h3>
+<h3>Posts a tweet when you initially login the number of days remaining until re:Invent.</h3>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Only 11 days until <a href="https://twitter.com/AWSreInvent">@AWSreInvent</a> <a href="https://twitter.com/hashtag/RoadToReInvent?src=hash">#RoadToReInvent</a>!! <a href="https://t.co/LrhbtpdbFs">https://t.co/LrhbtpdbFs</a></p>&mdash; ☁️🚀ranman🚀☁️ (@jrhunt) <a href="https://twitter.com/jrhunt/status/799264826786742272">November 17, 2016</a></blockquote>
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+<button id="loginButton">Login to twitter!</button>
+</body>
+
+
+
+<footer>
+<h1>Thanks!</h1>
+<ul>
+<li>wnjones</li>
+<li>zencephalon</li>
+<li>juliankleinhans</li>
+<li>davidmco65</li>
+<li>genkids</li>
+<li>twitchyhml</li>
+<li>Geektimus</li>
+<li>Onyx_Raven</li>
+</ul>
+</footer>
+
