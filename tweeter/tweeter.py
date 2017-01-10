@@ -13,7 +13,7 @@ buf = io.BytesIO()
 s3.download_fileobj('daysuntilreinvent-config', 'config.json', buf)
 creds = json.loads(buf.getvalue())
 
-reinvent = datetime.date(2016, 11, 28)
+reinvent = datetime.date(2017, 11, 28)
 today = datetime.date.today()
 diff = reinvent - today
 
